@@ -44,7 +44,7 @@ Device* d_device(Device *d)
 void append_device(void *ll, char *name, char *mac)
 {
     if (((RecordList*)ll)->buffhead == 0)
-        append_record(ll, "dummy");
+        append_record(ll, NULL);
 
     Record *r = ((RecordList*)ll)->head;
     Device* d = c_device(name, mac);
