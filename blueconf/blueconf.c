@@ -149,7 +149,7 @@ int is_match(RecordList *l, char *macaddr, const char *username)
 extern char* yytext;
 extern int yylineno;
 int yyerror(char *s) {
-	printf("%s on line %d - %s\n", s, yylineno, yytext);
+    fprintf(stderr, "Bluelock[e]: %s on line %d - %s\n", s, yylineno, yytext);
 }
 	
 extern FILE*  yyin;
@@ -160,12 +160,10 @@ void get_conf()
 		yyin = fopen(ConfPath, "r");
 
 		if (yyin == NULL)
-			fprintf(stderr, "Error: Can not open configuration file.\n");
+			fprintf(stderr, "Bluelock[e]: Can not open configuration file.\n");
 
 		if (!yyparse())
-			fprintf(stderr, "Successfully parsed.\n");
-		else
-			fprintf(stderr, "Error found.\n");
+			fprintf(stderr, "Bluelock[i]: Successfully parsed.\n");
 
 		fclose(yyin);
 }
