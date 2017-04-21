@@ -157,16 +157,14 @@ int yyerror(char *s) {
 }
 	
 extern FILE*  yyin;
-RecordList *get_conf()
+void get_conf()
 {
 		c_record_list(&rList);
 
 		yyin = fopen(ConfPath, "r");
 
-		if (yyin == NULL) {
+		if (yyin == NULL)
 			fprintf(stderr, "Error: Can not open configuration file.\n");
-			return rList;
-		}
 
 		if (!yyparse())
 			fprintf(stderr, "Successfully parsed.\n");
@@ -174,6 +172,5 @@ RecordList *get_conf()
 			fprintf(stderr, "Error found.\n");
 
 		fclose(yyin);
-		return rList;
 }
 

@@ -64,7 +64,7 @@ void print_dList(Device *);
 void print_rList(Record *);
 
 int is_match(RecordList *, char *, const char *);
-RecordList *get_conf();
+void get_conf();
 
 extern int yyparse(void);
 
