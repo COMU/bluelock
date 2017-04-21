@@ -46,11 +46,11 @@ records:
        | records record
        ;
 
-record: USERNAME OPENBRACE devices ENDBRACE { set_record((void*)(rList), $1); }
+record: USERNAME OPENBRACE devices ENDBRACE { set_record($1); }
       ;
 
-devices: devices DEVICENAME EQUAL MAC COMMA { append_device((void*)(rList), $2, $4); }
-       | DEVICENAME EQUAL MAC COMMA { append_device((void*)(rList), $1, $3); }
+devices: devices DEVICENAME EQUAL MAC COMMA { append_device($2, $4); }
+       | DEVICENAME EQUAL MAC COMMA { append_device($1, $3); }
        ;
 
 %%

@@ -41,12 +41,12 @@ Device* d_device(Device *d)
     return next;
 }
 
-void append_device(void *ll, char *name, char *mac)
+void append_device(char *name, char *mac)
 {
-    if (((RecordList*)ll)->buffhead == 0)
-        append_record(ll, NULL);
+    if (rList->buffhead == 0)
+        append_record(NULL);
 
-    Record *r = ((RecordList*)ll)->head;
+    Record *r = rList->head;
     Device* d = c_device(name, mac);
     
     d->next = r->dListHead;
@@ -78,24 +78,20 @@ Record* d_record(Record *r)
 }
 
 
-void append_record(void *ll, char *username)
+void append_record(char *username)
 {
-    RecordList *l = (RecordList*)ll;
-
     Record *r = c_record(username);
 
-    r->next = l->head;
-    l->head = r;
-    l->buffhead = 1;
-    l->size++;
+    r->next = rList->head;
+    rList->head = r;
+    rList->buffhead = 1;
+    rList->size++;
 }
 
-void set_record(void *ll, char *username)
+void set_record(char *username)
 {
-    RecordList *l = (RecordList*)ll;
-
-    l->head->username = username;
-    l->buffhead = 0;
+    rList->head->username = username;
+    rList->buffhead = 0;
 }
 
 void c_record_list(RecordList **l)

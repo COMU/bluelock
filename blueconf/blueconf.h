@@ -54,9 +54,9 @@ typedef struct {
 RecordList *rList;
 Record *deviceBuffer;
 
-void set_record(void *, char *);
-void append_record(void *, char *);
-void append_device(void *, char *, char *);
+void set_record(char *);
+void append_record(char *);
+void append_device(char *, char *);
 void c_record_list(RecordList **);
 void d_record_list(RecordList *);
 
