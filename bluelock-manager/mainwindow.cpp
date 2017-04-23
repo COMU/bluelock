@@ -76,7 +76,7 @@ MainWindow::~MainWindow()
 void MainWindow::sendStatusMessage(QString message)
 {
     ui->statusBar->showMessage(message);
-    statusMessageTimer->start(3000);
+    statusMessageTimer->start(STATUS_MESSAGE_TIME);
 }
 
 void MainWindow::clearStatusMessage()
@@ -107,7 +107,7 @@ void MainWindow::startScan()
         deviceInfo.setCached(true);
     }
     discoveryAgent->start();
-    searchTimer->start(3000);
+    searchTimer->start(BT_SCAN_TIME);
     ui->statusBar->showMessage(tr("Searching for remote devices..."));
     ui->pushButtonSearch->setEnabled(false);
 }
