@@ -46,6 +46,8 @@ void print_rList(Record *);
 int is_match(RecordList *, char *, const char *);
 void get_conf();
 
+RecordList *get_rList();
+
 extern int yyparse(void);
 
 #ifdef __cplusplus

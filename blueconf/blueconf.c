@@ -181,3 +181,7 @@ void get_conf()
 		fclose(yyin);
 }
 
+RecordList *get_rList()
+{
+    return rList;
+}
