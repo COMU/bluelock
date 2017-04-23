@@ -28,6 +28,7 @@ white [ \n\t]+
 macid ([0-9A-Fa-f]{2}:){5}([0-9A-Fa-f]{2})
 username [a-z_][a-z0-9_]{0,30}
 devicename \"[a-z_ ]{1,20}\"
+commentline "#"
 
 %%
 
@@ -40,6 +41,13 @@ devicename \"[a-z_ ]{1,20}\"
 }
 {devicename} { yylval.word = strdup(yytext);
 	return DEVICENAME;
+}
+
+{commentline} { char c;
+    do {
+        c = input();
+    } while (c != '\n');
+    yylineno++;
 }
 
 "," return COMMA;
