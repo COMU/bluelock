@@ -90,11 +90,8 @@ PAM_EXTERN int pam_sm_authenticate(pam_handle_t *pamh, int flags,int argc,
     user_retval = pam_get_user(pamh, &username, NULL);
     if (user_retval != PAM_SUCCESS)
         return PAM_USER_UNKNOWN;
-    
-    /*
-     * TODO: get pam_unix from LD environment variable
-     */
-    void* libunix = dlopen("/lib/x86_64-linux-gnu/security/pam_unix.so", RTLD_NOW);
+
+    void* libunix = dlopen("pam_unix.so", RTLD_NOW);
     int (*smauth)(pam_handle_t*, int, int, const char **);
     smauth = dlsym(libunix,"pam_sm_authenticate");
 
