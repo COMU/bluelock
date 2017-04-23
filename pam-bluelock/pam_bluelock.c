@@ -121,8 +121,7 @@ PAM_EXTERN int pam_sm_authenticate(pam_handle_t *pamh, int flags,int argc,
             pthread_cancel(thread_bluetooth_seeker);
             pthread_cancel(thread_auth_caller);
             dlclose(libunix);
-            //if (rList != NULL)
-            //    d_record_list(rList);
+            d_record_list();
             return retval_auth_caller;
         }
         if (retval_bluetooth_seeker == PAM_SUCCESS) {
@@ -130,15 +129,15 @@ PAM_EXTERN int pam_sm_authenticate(pam_handle_t *pamh, int flags,int argc,
             //pthread_cancel(thread_bluetooth_seeker);
             //pthread_join(thread_bluetooth_seeker, NULL);
             dlclose(libunix);
-            //d_record_list(rList);
+            d_record_list();
             return PAM_SUCCESS;
         }
         if (retval_auth_caller == PAM_SUCCESS) {
             //pthread_cancel(thread_bluetooth_seeker);
-            pthread_join(thread_bluetooth_seeker, NULL);
+            //pthread_join(thread_bluetooth_seeker, NULL);
             pthread_join(thread_auth_caller, NULL);
             dlclose(libunix);
-            //d_record_list(rList);
+            d_record_list();
             return PAM_SUCCESS;
         }
         sleep(0.001);

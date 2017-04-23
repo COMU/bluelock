@@ -34,11 +34,16 @@ Device* c_device(char *name, char *mac)
 
 Device* d_device(Device *d)
 {
-    Device *next = d->next;
-    free(d->name);
-    free(d->mac);
-    free(d);
-    return next;
+    if (d) {
+        Device *next = d->next;
+        if (d->name)
+            free(d->name);
+        if (d->mac)
+            free(d->mac);
+        free(d);
+        return d->next;
+    }
+    return NULL;
 }
 
 void append_device(char *name, char *mac)
@@ -58,6 +63,7 @@ Record* c_record(char *username)
 {
     Record *r = (Record *) malloc(sizeof(Record));
     r->username = username;
+    r->size = 0;
     r->dListHead = NULL;
     r->next = NULL;
     return r;
@@ -65,18 +71,23 @@ Record* c_record(char *username)
 
 Record* d_record(Record *r)
 {
-    Device *next;
-    next = r->dListHead;
-    
-    for (int i=0; i < r->size; ++i)
-        next = d_device(next);
+    if (r) {
+        Device *next = r->dListHead;
 
-    Record *nextRecord = r->next;
-    free(r->username);
-    free(r);
-    return nextRecord;
+        for (int i = 0; i < r->size; ++i) {
+            if (next)
+                next = d_device(next);
+        }
+
+        Record *nextRecord = r->next;
+        if (r->username)
+            free(r->username);
+
+        free(r);
+        return nextRecord;
+    }
+    return NULL;
 }
-
 
 void append_record(char *username)
 {
@@ -94,23 +105,25 @@ void set_record(char *username)
     rList->buffhead = 0;
 }
 
-void c_record_list(RecordList **l)
+void c_record_list()
 {
-    (*l) = (RecordList *) malloc(sizeof(RecordList));
-    (*l)->size = 0;
-    (*l)->head = NULL;
-    (*l)->buffhead = 0;
+    rList = (RecordList *) malloc(sizeof(RecordList));
+    rList->size = 0;
+    rList->head = NULL;
+    rList->buffhead = 0;
 }
 
-void d_record_list(RecordList *l)
+void d_record_list()
 {
-    Record *next;
-    next = l->head;
-    
-    for (int i=0; i < l->size; ++i)
-        next = d_record(next);
+    if (rList) {
+        Record *next = rList->head;
+        for (int i = 0; i < rList->size; ++i) {
+            if (next)
+                next = d_record(next);
+        }
 
-    free(l);
+        free(rList);
+    }
 }
 
 void print_dList(Device *d)

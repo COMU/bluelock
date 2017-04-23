@@ -57,8 +57,8 @@ Record *deviceBuffer;
 void set_record(char *);
 void append_record(char *);
 void append_device(char *, char *);
-void c_record_list(RecordList **);
-void d_record_list(RecordList *);
+void c_record_list();
+void d_record_list();
 
 void print_dList(Device *);
 void print_rList(Record *);
