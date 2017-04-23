@@ -27,29 +27,9 @@ extern "C" {
 
 #include <stdio.h>
 #include "blueparse.tab.h"
+#include "structures.h"
 
 static const char ConfPath[] = "/etc/bluelock.conf";
-
-typedef struct device {
-    char *name;
-    char *mac;
-
-    struct device *next;
-} __attribute__ ((packed)) Device;
-
-typedef struct record {
-    char *username;
-    unsigned int size;
-    Device *dListHead;
-    
-    struct record *next;
-} __attribute__ ((packed)) Record;
-
-typedef struct {
-    unsigned int size;
-    Record *head;
-    int buffhead;
-} __attribute__ ((packed)) RecordList;
 
 RecordList *rList;
 Record *deviceBuffer;
