@@ -28,10 +28,17 @@ DEFINES += BT_SCAN_TIME=3000 \
 
 SOURCES += main.cpp\
         mainwindow.cpp \
-    customwidgets/bluetoothitemwidget.cpp
+    customwidgets/bluetoothitemwidget.cpp \
+    blueconfpp/blueconfpp.cpp
 
 HEADERS  += mainwindow.h \
-    customwidgets/bluetoothitemwidget.h
+    customwidgets/bluetoothitemwidget.h \
+    blueconfpp/blueconfpp.h
 
 FORMS    += mainwindow.ui \
     customwidgets/bluetoothitemwidget.ui
+
+unix:!macx: LIBS += -L$$PWD/../blueconf/ -lblueconf
+
+INCLUDEPATH += $$PWD/../blueconf
+DEPENDPATH += $$PWD/../blueconf

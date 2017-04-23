@@ -26,7 +26,8 @@
 #include <QDebug>
 #include <QTimer>
 #include <QStandardItemModel>
-#include <QLibrary>
+
+#include <blueconfpp/blueconfpp.h>
 
 namespace Ui {
 class MainWindow;
