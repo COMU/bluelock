@@ -21,8 +21,6 @@
 %{
 #include "blueconf.h"
 
-extern RecordList *rList;
-
 int yywrap(void)
 {
         return 1;

@@ -32,7 +32,6 @@ extern "C" {
 static const char ConfPath[] = "/etc/bluelock.conf";
 
 RecordList *rList;
-Record *deviceBuffer;
 
 void set_record(char *);
 void append_record(char *);
