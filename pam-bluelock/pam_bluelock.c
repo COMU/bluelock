@@ -27,6 +27,12 @@
 #include <unistd.h>
 #include <dlfcn.h>
 #include <stdatomic.h>
+#include <sys/ioctl.h>
+#include <signal.h>
+#include <getopt.h>
+#include <errno.h>
+#include <ctype.h>
+#include <fcntl.h>
 
 #include <security/pam_appl.h>
 #include <security/pam_modules.h>
@@ -45,6 +51,35 @@
 #define BT_JOIN_INACTIVE -1
 
 atomic_int bt_join_state = BT_JOIN_INACTIVE;
+
+static int find_conn(int s, int dev_id, long arg)
+{
+	struct hci_conn_list_req *cl;
+	struct hci_conn_info *ci;
+	int i;
+
+	if (!(cl = malloc(10 * sizeof(*ci) + sizeof(*cl)))) {
+		perror("Can't allocate memory");
+		exit(1);
+	}
+	cl->dev_id = dev_id;
+	cl->conn_num = 10;
+	ci = cl->conn_info;
+
+	if (ioctl(s, HCIGETCONNLIST, (void *) cl)) {
+		perror("Can't get connection list");
+		exit(1);
+	}
+
+	for (i = 0; i < cl->conn_num; i++, ci++)
+		if (!bacmp((bdaddr_t *) arg, &ci->bdaddr)) {
+			free(cl);
+			return 1;
+		}
+
+	free(cl);
+	return 0;
+}
 
 typedef struct {
     int *retval;
@@ -153,7 +188,16 @@ void *bluetooth_seeker(void *bthreadargs)
     char name[248] = {0};
     RecordList *rl = bargs->rList;
     int *retv = (int*)(bargs->retval);
-	
+	int bluetoothDevice, bluetoothDeviceId;
+
+	struct hci_conn_info_req *cr;
+	int8_t rssi;
+	uint16_t handle_rssi;
+	uint8_t role_rssi;
+	unsigned int ptype_rssi;
+	role_rssi = 0x01;
+	ptype_rssi = HCI_DM1 | HCI_DM3 | HCI_DM5 | HCI_DH1 | HCI_DH3 | HCI_DH5;
+
 
     dev_id = hci_get_route(NULL);
     sock = hci_open_dev(dev_id);
@@ -178,8 +222,43 @@ void *bluetooth_seeker(void *bthreadargs)
                 strcpy(name, "[unknown]");
                 
             if(is_match(rl, addr, bargs->username)) {
-                *retv = PAM_SUCCESS;
-                break;
+
+				bluetoothDeviceId = hci_get_route(&(ii+i)->bdaddr);
+				bluetoothDevice = hci_open_dev(bluetoothDeviceId);
+				
+				if(bluetoothDevice<0){
+					syslog(LOG_AUTH, "RSSI FAIL");
+				}
+				if(ioctl(bluetoothDevice, HCIGETCONNINFO, (unsigned long) cr) < 0){
+					if (hci_create_connection(bluetoothDevice, &(ii+i)->bdaddr, htobs(ptype_rssi),
+								htobs(0x0000), role_rssi, &handle_rssi, 25000) < 0){
+								perror("Can't create connection");}
+				}
+				cr = malloc(sizeof(*cr) + sizeof(struct hci_conn_info));
+
+				if (!cr) {
+					perror("Can't allocate memory");
+					
+				}
+
+				bacpy(&cr->bdaddr, &(ii+i)->bdaddr);
+				cr->type = ACL_LINK;
+				if (ioctl(bluetoothDevice, HCIGETCONNINFO, (unsigned long) cr) < 0) {
+					perror("Get connection info failed");
+				}
+
+				if (hci_read_rssi(bluetoothDevice, htobs(cr->conn_info->handle), &rssi, 1000) < 0) {
+					perror("Read RSSI failed");
+				}
+
+				free(cr);
+
+				hci_close_dev(bluetoothDevice);
+	
+				if((int)rssi==0){
+                	*retv = PAM_SUCCESS;
+                	break;
+				}
             }
         }
 
