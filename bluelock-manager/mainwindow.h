@@ -26,8 +26,10 @@
 #include <QDebug>
 #include <QTimer>
 #include <QStandardItemModel>
+#include <QMap>
 
 #include <blueconfpp/blueconfpp.h>
+#include <bluetoothitem.h>
 
 namespace Ui {
 class MainWindow;
@@ -41,27 +43,33 @@ public:
     explicit MainWindow(QWidget *parent = 0);
     ~MainWindow();
 
+    enum messageType { error, info };
+    Q_ENUM(messageType)
+
 private slots:
     void startScan();
     void stopScan();
+
     void deviceDiscovered(const QBluetoothDeviceInfo &device);
+
     void scanLocalDevice();
 
-    void sendStatusMessage(QString message);
+    void sendStatusMessage(QString message, messageType type);
     void clearStatusMessage();
 
     void setLocalDeviceMode();
 
     void hostModeStateBehavior(const QBluetoothLocalDevice::HostMode hm);
 private:
-    void addDevice(QString DeviceName, QString DeviceMAC, bool available);
+    void addDevice(QString DeviceName, QString DeviceMAC, bool available, bool trusted);
     void removeDevice();
 
     Ui::MainWindow *ui;
 
     QTimer *searchTimer;
     QTimer *statusMessageTimer;
-    QList<QBluetoothAddress> remotes;
+    BlueConfPP *conf;
+    QMap<QString, BluetoothItem *> *remotes;
     QBluetoothDeviceDiscoveryAgent *discoveryAgent;
     QBluetoothLocalDevice *localDevice;
     QStandardItemModel *localDeviceModel;

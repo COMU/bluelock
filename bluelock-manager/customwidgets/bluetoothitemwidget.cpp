@@ -23,6 +23,7 @@
 BluetoothItemWidget::BluetoothItemWidget(QString DeviceName,
                                          QString DeviceMAC,
                                          bool available,
+                                         bool trusted,
                                          QWidget *parent) :
     QWidget(parent),
     ui(new Ui::BluetoothItemWidget)
@@ -31,10 +32,31 @@ BluetoothItemWidget::BluetoothItemWidget(QString DeviceName,
 
     ui->label_name->setText(DeviceName);
     ui->label_mac->setText(DeviceMAC);
-    ui->checkBox_state->setChecked(available);
+    ui->checkBox_available->setChecked(available);
+    ui->checkBox_trusted->setChecked(trusted);
 }
 
 BluetoothItemWidget::~BluetoothItemWidget()
 {
     delete ui;
+}
+
+QString BluetoothItemWidget::getDeviceMAC()
+{
+    return ui->label_mac->text();
+}
+
+void BluetoothItemWidget::setDeviceName(QString deviceName)
+{
+    ui->label_name->setText(deviceName);
+}
+
+void BluetoothItemWidget::setTrust(bool trusted)
+{
+    ui->checkBox_trusted->setChecked(trusted);
+}
+
+void BluetoothItemWidget::setAvailable(bool available)
+{
+    ui->checkBox_available->setChecked(available);
 }

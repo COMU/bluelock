@@ -23,17 +23,22 @@ DEFINES += QT_DEPRECATED_WARNINGS
 DEFINES += QT_DISABLE_DEPRECATED_BEFORE=0x060000    # disables all the APIs deprecated before Qt 6.0.0
 
 DEFINES += BT_SCAN_TIME=3000 \
-    STATUS_MESSAGE_TIME=3000
+    STATUS_MESSAGE_TIME=3000 \
+    CONFIG_PATH=\\\"/etc/bluelock.conf\\\"
 
 
 SOURCES += main.cpp\
         mainwindow.cpp \
     customwidgets/bluetoothitemwidget.cpp \
-    blueconfpp/blueconfpp.cpp
+    blueconfpp/blueconfpp.cpp \
+#    bluetoothlistmodel.cpp \
+    bluetoothitem.cpp
 
 HEADERS  += mainwindow.h \
     customwidgets/bluetoothitemwidget.h \
-    blueconfpp/blueconfpp.h
+    blueconfpp/blueconfpp.h \
+#    bluetoothlistmodel.h \
+    bluetoothitem.h
 
 FORMS    += mainwindow.ui \
     customwidgets/bluetoothitemwidget.ui

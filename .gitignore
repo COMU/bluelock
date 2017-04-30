@@ -1,0 +1,6 @@
+*.so*
+*.o*
+*.tab.*
+*.yy.*
+*.pro.user*
+build-bluelock-manager*

@@ -18,9 +18,6 @@
  *  along with libblueconf.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include <stdlib.h>
-#include <string.h>
-
 #include "blueconf.h"
 
 Device* c_device(char *name, char *mac)
@@ -41,7 +38,7 @@ Device* d_device(Device *d)
         if (d->mac)
             free(d->mac);
         free(d);
-        return d->next;
+        return next;
     }
     return NULL;
 }
@@ -159,13 +156,6 @@ int is_match(RecordList *l, char *macaddr, const char *username)
     return 0;
 }
 
-extern char* yytext;
-extern int yylineno;
-int yyerror(char *s) {
-    fprintf(stderr, "Bluelock[e]: %s on line %d - %s\n", s, yylineno, yytext);
-}
-	
-extern FILE*  yyin;
 void get_conf()
 {
 		c_record_list(&rList);

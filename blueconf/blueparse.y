@@ -23,7 +23,13 @@
 
 int yywrap(void)
 {
-        return 1;
+    return 1;
+}
+
+extern char* yytext;
+extern int yylineno;
+int yyerror(char *s) {
+    fprintf(stderr, "Bluelock[e]: %s on line %d - %s\n", s, yylineno, yytext);
 }
 
 %}

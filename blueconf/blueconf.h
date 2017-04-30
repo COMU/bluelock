@@ -26,6 +26,9 @@ extern "C" {
 #endif
 
 #include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+
 #include "blueparse.tab.h"
 #include "structures.h"
 
@@ -48,6 +51,7 @@ void get_conf();
 RecordList *get_rList();
 
 extern int yyparse(void);
+extern FILE* yyin;
 
 #ifdef __cplusplus
 }
