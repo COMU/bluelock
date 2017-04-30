@@ -31,13 +31,13 @@ SOURCES += main.cpp\
         mainwindow.cpp \
     customwidgets/bluetoothitemwidget.cpp \
     blueconfpp/blueconfpp.cpp \
-    bluetoothlistmodel.cpp \
+#    bluetoothlistmodel.cpp \
     bluetoothitem.cpp
 
 HEADERS  += mainwindow.h \
     customwidgets/bluetoothitemwidget.h \
     blueconfpp/blueconfpp.h \
-    bluetoothlistmodel.h \
+#    bluetoothlistmodel.h \
     bluetoothitem.h
 
 FORMS    += mainwindow.ui \
