@@ -25,6 +25,8 @@
 extern "C" {
 #endif
 
+#include <stdint.h>
+
 typedef struct device {
     char *name;
     char *mac;

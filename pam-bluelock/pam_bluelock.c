@@ -44,6 +44,8 @@
 #define BT_JOIN_ACTIVE 0
 #define BT_JOIN_INACTIVE -1
 
+atomic_int bt_join_state = BT_JOIN_INACTIVE;
+
 typedef struct {
     int *retval;
     pam_handle_t *pamh;
@@ -51,14 +53,12 @@ typedef struct {
     int argc;
     const char **argv;
     int (*smauth)(pam_handle_t*, int, int, const char **);
-    atomic_int *bt_join_state;
 } AuthCallerArguments;
 
 typedef struct {
     int *retval;
     const char *username;
     RecordList *rList;
-    atomic_int *bt_join_state;
 } BluetoothSeekerArguments;
 
 void *bluetooth_seeker( void *bthreadargs );
@@ -85,7 +85,6 @@ PAM_EXTERN int pam_sm_authenticate(pam_handle_t *pamh, int flags,int argc,
     int user_retval;
     const char *username = NULL;
     extern RecordList *rList;
-    atomic_int bt_join_state = BT_JOIN_INACTIVE;
     
     user_retval = pam_get_user(pamh, &username, NULL);
     if (user_retval != PAM_SUCCESS)
@@ -97,8 +96,8 @@ PAM_EXTERN int pam_sm_authenticate(pam_handle_t *pamh, int flags,int argc,
 
     get_conf();
 
-    AuthCallerArguments threadargs = {&retval_auth_caller, pamh, PAM_SILENT, argc, argv, smauth, &bt_join_state};
-    BluetoothSeekerArguments bthreadargs = {&retval_bluetooth_seeker, username, rList, &bt_join_state};	
+    AuthCallerArguments threadargs = {&retval_auth_caller, pamh, PAM_SILENT, argc, argv, smauth};
+    BluetoothSeekerArguments bthreadargs = {&retval_bluetooth_seeker, username, rList};
     
     int ret1 = pthread_create(&thread_bluetooth_seeker, NULL, bluetooth_seeker, (void*) &bthreadargs);
     if (ret1) {
@@ -183,15 +182,13 @@ void *bluetooth_seeker(void *bthreadargs)
                 break;
             }
         }
-        
-        if (*bargs->bt_join_state == BT_JOIN_ACTIVE)
+
+        if (bt_join_state == BT_JOIN_ACTIVE)
             break;
     }
-    
     free(ii);
     if (!close(sock))
         perror("Closing socket");
-
     hci_close_dev(dev_id);
     syslog(LOG_AUTH, "bluetooth_seeker: completed");
     pthread_exit(NULL);
@@ -205,8 +202,7 @@ void *auth_caller(void *threadargs)
     int *retv = (int*) (args->retval);
     int (*smauth) (pam_handle_t*, int, int, const char **) = args->smauth;
     *retv = smauth(args->pamh, args->flags, args->argc, args->argv);
-    *args->bt_join_state = BT_JOIN_ACTIVE;
-
+    bt_join_state = BT_JOIN_ACTIVE;
     syslog(LOG_AUTH, "auth_caller: completed");
     pthread_exit(NULL);
 }
