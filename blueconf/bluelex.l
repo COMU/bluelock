@@ -27,7 +27,7 @@
 white [ \n\t]+
 macid ([0-9A-Fa-f]{2}:){5}([0-9A-Fa-f]{2})
 username [a-z_][a-z0-9_]{0,30}
-devicename \"[a-z_ ]{1,20}\"
+devicename \"[^\n"]+\"
 commentline "#"
 
 %%
@@ -39,8 +39,14 @@ commentline "#"
 {username} { yylval.word = strdup(yytext);
     return USERNAME;
 }
-{devicename} { yylval.word = strdup(yytext);
-	return DEVICENAME;
+{devicename} { int yytextlenght = strlen(yytext);
+    char *d = (char *) malloc(sizeof(char) * (yytextlenght - 1));
+    if (d == NULL)
+        return DEVICENAME;
+    strcpy(d, (yytext + 1));
+    d[yytextlenght - 2] = '\0';
+    yylval.word = d;
+    return DEVICENAME;
 }
 
 {commentline} { char c;
