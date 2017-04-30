@@ -41,7 +41,7 @@ Device* d_device(Device *d)
         if (d->mac)
             free(d->mac);
         free(d);
-        return d->next;
+        return next;
     }
     return NULL;
 }
