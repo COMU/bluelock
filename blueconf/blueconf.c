@@ -156,13 +156,6 @@ int is_match(RecordList *l, char *macaddr, const char *username)
     return 0;
 }
 
-extern char* yytext;
-extern int yylineno;
-int yyerror(char *s) {
-    fprintf(stderr, "Bluelock[e]: %s on line %d - %s\n", s, yylineno, yytext);
-}
-	
-extern FILE*  yyin;
 void get_conf()
 {
 		c_record_list(&rList);

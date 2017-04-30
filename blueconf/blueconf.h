@@ -51,6 +51,7 @@ void get_conf();
 RecordList *get_rList();
 
 extern int yyparse(void);
+extern FILE* yyin;
 
 #ifdef __cplusplus
 }
