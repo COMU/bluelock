@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>473</width>
-    <height>60</height>
+    <width>488</width>
+    <height>66</height>
    </rect>
   </property>
   <property name="sizePolicy">
@@ -81,7 +81,7 @@
         </widget>
        </item>
        <item>
-        <widget class="QCheckBox" name="checkBox_saved">
+        <widget class="QCheckBox" name="checkBox_trusted">
          <property name="text">
           <string/>
          </property>
@@ -112,7 +112,7 @@
         </widget>
        </item>
        <item>
-        <widget class="QCheckBox" name="checkBox_state">
+        <widget class="QCheckBox" name="checkBox_available">
          <property name="enabled">
           <bool>false</bool>
          </property>

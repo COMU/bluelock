@@ -31,6 +31,8 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->pushButtonSave->setDisabled(true);
 
     localDevice = new QBluetoothLocalDevice(this);
+    if (!localDevice->allDevices().count())
+        ui->centralWidget->setDisabled(true);
 
     statusMessageTimer = new QTimer(this);
     connect(statusMessageTimer, SIGNAL(timeout()),
@@ -49,6 +51,8 @@ MainWindow::MainWindow(QWidget *parent) :
             this, SLOT(hostModeStateBehavior(QBluetoothLocalDevice::HostMode)));
     connect(ui->pushButtonOnOff, SIGNAL(released()),
             this, SLOT(setLocalDeviceMode()));
+    connect(discoveryAgent, SIGNAL(objectNameChanged(QString)),
+            this, SLOT(deviceInfoUpdated(QString)));
 
     // local device combobox
     localDeviceModel = new QStandardItemModel(this);
@@ -63,6 +67,17 @@ MainWindow::MainWindow(QWidget *parent) :
 
     hostModeStateBehavior(localDevice->hostMode());
     qDebug() << localDevice->hostMode();
+
+    remotes = new QMap<QString, BluetoothItem *>();
+
+    // blueconf
+    conf = new BlueConfPP(remotes, this);
+
+    QMap<QString, BluetoothItem *>::iterator i;
+    for (i = remotes->begin(); i != remotes->end(); ++i) {
+        BluetoothItem *item = i.value();
+        addDevice(item->getName(), item->getMAC(), item->getAvailable(), item->getTrusted());
+    }
 }
 
 MainWindow::~MainWindow()
@@ -71,10 +86,27 @@ MainWindow::~MainWindow()
     localDevice->setHostMode(QBluetoothLocalDevice::HostPoweredOff);
 
     delete ui;
+
+    delete searchTimer;
+    delete statusMessageTimer;
+    delete conf;
+    delete discoveryAgent;
+    delete localDevice;
+    delete localDeviceModel;
 }
 
-void MainWindow::sendStatusMessage(QString message)
+void MainWindow::sendStatusMessage(QString message, messageType type)
 {
+    switch (type) {
+    case error:
+        ui->statusBar->setStyleSheet("color: red");
+        break;
+    case info:
+        ui->statusBar->setStyleSheet("color: blue");
+        break;
+    default:
+        ui->statusBar->setStyleSheet("color: black");
+    }
     ui->statusBar->showMessage(message);
     statusMessageTimer->start(STATUS_MESSAGE_TIME);
 }
@@ -85,10 +117,13 @@ void MainWindow::clearStatusMessage()
     statusMessageTimer->stop();
 }
 
-void MainWindow::addDevice(QString DeviceName, QString DeviceMAC, bool available)
+void MainWindow::addDevice(QString DeviceName,
+                           QString DeviceMAC,
+                           bool available,
+                           bool trusted)
 {
     QListWidgetItem *listItem = new QListWidgetItem(ui->listWidget);
-    BluetoothItemWidget *itemWidget = new BluetoothItemWidget(DeviceName, DeviceMAC, available, ui->listWidget);
+    BluetoothItemWidget *itemWidget = new BluetoothItemWidget(DeviceName, DeviceMAC, available, trusted, ui->listWidget);
     listItem->setSizeHint(itemWidget->sizeHint());
     ui->listWidget->addItem(listItem);
     ui->listWidget->setItemWidget(listItem, itemWidget);
@@ -101,7 +136,7 @@ void MainWindow::removeDevice()
 
 void MainWindow::startScan()
 {
-    qDebug() << discoveryAgent->discoveredDevices().count();
+    qDebug() << "Discovered device count:" <<discoveryAgent->discoveredDevices().count();
     discoveryAgent->stop();
     foreach (QBluetoothDeviceInfo deviceInfo, discoveryAgent->discoveredDevices()) {
         deviceInfo.setCached(true);
@@ -129,15 +164,29 @@ void MainWindow::stopScan()
 void MainWindow::deviceDiscovered(const QBluetoothDeviceInfo &device)
 {
     qDebug() << "Found device:" << device.name() << '(' << device.address().toString() << ')';
-    foreach (QBluetoothAddress address, remotes) {
-        qDebug() << "Devices existed: " << address.toString();
-        if (device.address().toString() == address.toString()) {
-            return;
+
+    BluetoothItem *i = remotes->value(device.address().toString(), new BluetoothItem());
+    if (i->getMAC() != BluetoothItem().getMAC()) {
+        for (int i = 0; i < ui->listWidget->count(); i++) {
+            BluetoothItemWidget *itemWidget = static_cast<BluetoothItemWidget *>
+                    (ui->listWidget->itemWidget(ui->listWidget->item(i)));
+            if (itemWidget->getDeviceMAC() == device.address().toString()) {
+                itemWidget->setDeviceName(device.name());
+                itemWidget->setAvailable(true);
+            }
         }
+        i->setName(device.name());
+        i->setAvailable(true);
+        return;
     }
 
-    remotes.append(device.address());
-    addDevice(device.name(), device.address().toString(), true);
+    remotes->insert(device.address().toString(),
+              new BluetoothItem(device.address().toString(),
+                                device.name(),
+                                false,
+                                true));
+
+    addDevice(device.name(), device.address().toString(), true, false);
 }
 
 void MainWindow::scanLocalDevice()
@@ -149,6 +198,8 @@ void MainWindow::setLocalDeviceMode()
 {
     if (localDevice->hostMode() == QBluetoothLocalDevice::HostPoweredOff) {
         localDevice->setHostMode(QBluetoothLocalDevice::HostConnectable);
+        if (!localDevice->allDevices().count())
+            sendStatusMessage(tr("Local device not found!"), error);
     } else {
         localDevice->setHostMode(QBluetoothLocalDevice::HostPoweredOff);
     }
@@ -160,11 +211,11 @@ void MainWindow::hostModeStateBehavior(const QBluetoothLocalDevice::HostMode hm)
     if (hm == QBluetoothLocalDevice::HostPoweredOff) {
         ui->pushButtonOnOff->setText(tr("Enable"));
         ui->pushButtonSearch->setDisabled(true);
-        sendStatusMessage(tr("Bluetooth device is off!"));
+        sendStatusMessage(tr("Bluetooth device is off!"), info);
     } else {
         ui->pushButtonOnOff->setText(tr("Disable"));
         ui->pushButtonSearch->setEnabled(true);
-        sendStatusMessage(tr("Bluetooth device is on!"));
+        sendStatusMessage(tr("Bluetooth device is on!"), info);
     }
 }
 

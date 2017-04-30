@@ -33,9 +33,15 @@ class BluetoothItemWidget : public QWidget
 public:
     explicit BluetoothItemWidget(QString DeviceName,
                                  QString DeviceMAC,
-                                 bool available,
+                                 bool available = false,
+                                 bool trusted = false,
                                  QWidget *parent = 0);
     ~BluetoothItemWidget();
+
+    QString getDeviceMAC();
+    void setDeviceName(QString deviceName);
+    void setTrust(bool trusted);
+    void setAvailable(bool available);
 
 private:
     Ui::BluetoothItemWidget *ui;

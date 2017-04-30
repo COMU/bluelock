@@ -23,9 +23,11 @@
 #include <QObject>
 #include <QLibrary>
 #include <QDebug>
-#include <QHash>
+#include <QMap>
+#include <QFile>
 
 #include <customwidgets/bluetoothitemwidget.h>
+#include <bluetoothitem.h>
 
 extern "C" {
     #include <structures.h>
@@ -35,17 +37,17 @@ class BlueConfPP : public QObject
 {
     Q_OBJECT
 public:
-    explicit BlueConfPP(QObject *parent = 0);
+    explicit BlueConfPP(QMap<QString, BluetoothItem *> *devices, QObject *parent = 0);
     ~BlueConfPP();
 
-    void getDevicesList();
+    void save();
 
 private:
     QLibrary *blueconf;
     RecordList *rList;
 
-    Record *selectedRecord;
-    QHash<QString, Device *> *selectedRecordDevices;
+    QList<QPair<QString, QMap<QString, BluetoothItem *> *>> records;
+    QMap<QString, BluetoothItem *> *selectedRecordDevices;
 
     typedef void (*d_record_list)();
     d_record_list dRecordList;
@@ -54,7 +56,7 @@ private:
     typedef RecordList* (*get_rList)();
     get_rList getRList;
 
-    Record* selectRecord();
+    void getDevicesList();
 };
 
 #endif // BLUECONFPP_H
