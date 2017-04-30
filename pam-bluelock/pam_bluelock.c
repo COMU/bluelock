@@ -29,7 +29,6 @@
 #include <stdatomic.h>
 #include <sys/ioctl.h>
 #include <signal.h>
-#include <getopt.h>
 #include <errno.h>
 #include <ctype.h>
 #include <fcntl.h>
