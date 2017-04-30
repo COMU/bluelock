@@ -18,9 +18,6 @@
  *  along with libblueconf.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include <stdlib.h>
-#include <string.h>
-
 #include "blueconf.h"
 
 Device* c_device(char *name, char *mac)
