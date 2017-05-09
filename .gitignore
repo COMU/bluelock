@@ -1,6 +1,16 @@
 *.so*
 *.o*
+*.a
 *.tab.*
 *.yy.*
 *.pro.user*
 build-bluelock-manager*
+
+# CMake
+CMakeCache.txt
+CMakeFiles
+CMakeScripts
+Makefile
+cmake_install.cmake
+install_manifest.txt
+CTestTestfile.cmake
