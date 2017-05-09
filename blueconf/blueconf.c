@@ -158,17 +158,19 @@ int is_match(RecordList *l, char *macaddr, const char *username)
 
 void get_conf()
 {
-		c_record_list(&rList);
+    c_record_list(&rList);
 
-		yyin = fopen(ConfPath, "r");
+    yyin = fopen(ConfPath, "r");
 
-		if (yyin == NULL)
-			fprintf(stderr, "Bluelock[e]: Can not open configuration file.\n");
+    if (yyin == NULL) {
+	    fprintf(stderr, "Bluelock[e]: Can not open configuration file.\n");
+        return;
+    }
 
-		if (!yyparse())
-			fprintf(stderr, "Bluelock[i]: Successfully parsed.\n");
+    if (!yyparse())
+	    fprintf(stderr, "Bluelock[i]: Successfully parsed.\n");
 
-		fclose(yyin);
+    fclose(yyin);
 }
 
 RecordList *get_rList()
