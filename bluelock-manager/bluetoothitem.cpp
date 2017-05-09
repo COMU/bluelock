@@ -3,7 +3,8 @@
 BluetoothItem::BluetoothItem(QString MAC,
                              QString name,
                              bool trusted,
-                             bool available)
+                             bool available,
+                             QObject *parent) : QObject(parent)
 {
     this->MAC = MAC;
     this->name = name;
@@ -49,4 +50,9 @@ bool BluetoothItem::getAvailable() const
 void BluetoothItem::setAvailable(bool value)
 {
     available = value;
+}
+
+void BluetoothItem::updateTrustState(bool trustState)
+{
+    setTrusted(trustState);
 }

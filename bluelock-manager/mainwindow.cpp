@@ -31,35 +31,45 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->pushButtonSave->setDisabled(true);
 
     localDevice = new QBluetoothLocalDevice(this);
-    if (!localDevice->allDevices().count())
-        ui->centralWidget->setDisabled(true);
+    /*
+     * Disable UI if there aren't any local devices existed.
+     */
+//    if (!localDevice->allDevices().count())
+//        ui->centralWidget->setDisabled(true);
 
+    /*
+     * Clear statusMessage STATUS_MESSAGE_TIME later
+     */
     statusMessageTimer = new QTimer(this);
     connect(statusMessageTimer, SIGNAL(timeout()),
             this, SLOT(clearStatusMessage()));
 
+    /*
+     * Stop Device Searching BT_SCAN_TIME later
+     */
     searchTimer = new QTimer(this);
     connect(searchTimer, SIGNAL(timeout()),
             this, SLOT(stopScan()));
 
     discoveryAgent = new QBluetoothDeviceDiscoveryAgent(this);
-    connect(discoveryAgent, SIGNAL(deviceDiscovered(QBluetoothDeviceInfo)),
-            this, SLOT(deviceDiscovered(QBluetoothDeviceInfo)));
+    connect(discoveryAgent, SIGNAL(updateDevices(QBluetoothDeviceInfo)),
+            this, SLOT(updateDevices(QBluetoothDeviceInfo)));
     connect(ui->pushButtonSearch, SIGNAL(released()),
             this, SLOT(startScan()));
-    connect(localDevice, SIGNAL(hostModeStateChanged(QBluetoothLocalDevice::HostMode)),
-            this, SLOT(hostModeStateBehavior(QBluetoothLocalDevice::HostMode)));
+    connect(localDevice,
+            SIGNAL(hostModeStateChanged(QBluetoothLocalDevice::HostMode)),
+            this,
+            SLOT(hostModeStateBehavior(QBluetoothLocalDevice::HostMode)));
     connect(ui->pushButtonOnOff, SIGNAL(released()),
             this, SLOT(setLocalDeviceMode()));
-    connect(discoveryAgent, SIGNAL(objectNameChanged(QString)),
-            this, SLOT(deviceInfoUpdated(QString)));
 
     // local device combobox
     localDeviceModel = new QStandardItemModel(this);
     QStandardItem *mparent = localDeviceModel->invisibleRootItem();
     QList<QBluetoothHostInfo> localDevices = localDevice->allDevices();
     for (int i = 0; i < localDevices.size(); ++i) {
-        QStandardItem *item = new QStandardItem(localDevices.at(i).address().toString());
+        QStandardItem *item = new QStandardItem(
+                    localDevices.at(i).address().toString());
         mparent->appendRow(item);
         mparent = item;
     }
@@ -74,10 +84,8 @@ MainWindow::MainWindow(QWidget *parent) :
     conf = new BlueConfPP(remotes, this);
 
     QMap<QString, BluetoothItem *>::iterator i;
-    for (i = remotes->begin(); i != remotes->end(); ++i) {
-        BluetoothItem *item = i.value();
-        addDevice(item->getName(), item->getMAC(), item->getAvailable(), item->getTrusted());
-    }
+    for (i = remotes->begin(); i != remotes->end(); ++i)
+        addDevice(i.value());
 }
 
 MainWindow::~MainWindow()
@@ -117,16 +125,31 @@ void MainWindow::clearStatusMessage()
     statusMessageTimer->stop();
 }
 
-void MainWindow::addDevice(QString DeviceName,
-                           QString DeviceMAC,
-                           bool available,
-                           bool trusted)
+void MainWindow::addDevice(BluetoothItem *bItem)
 {
     QListWidgetItem *listItem = new QListWidgetItem(ui->listWidget);
-    BluetoothItemWidget *itemWidget = new BluetoothItemWidget(DeviceName, DeviceMAC, available, trusted, ui->listWidget);
+    BluetoothItemWidget *itemWidget = new BluetoothItemWidget(
+                bItem->getName(),
+                bItem->getMAC(),
+                bItem->getAvailable(),
+                bItem->getTrusted(),
+                ui->listWidget);
     listItem->setSizeHint(itemWidget->sizeHint());
     ui->listWidget->addItem(listItem);
     ui->listWidget->setItemWidget(listItem, itemWidget);
+    /*
+     * connects itemWidget->ui->checkBox_trusted with bItem->trusted
+     */
+    connect(itemWidget, SIGNAL(trustStateChanged(bool)),
+            bItem, SLOT(updateTrustState(bool)));
+    /*
+     * connects itemWidget->ui->checkBox_trusted with this->ui->pushButtonSave
+     *
+     * this->ui->pushButtonSave's availability must be enabled when the
+     * checkBox_trusted's state of any itemWidget changes.
+     */
+    connect(itemWidget, SIGNAL(trustStateChanged(bool)),
+            this, SLOT(updateSaveButton()));
 }
 
 void MainWindow::removeDevice()
@@ -136,9 +159,11 @@ void MainWindow::removeDevice()
 
 void MainWindow::startScan()
 {
-    qDebug() << "Discovered device count:" <<discoveryAgent->discoveredDevices().count();
+    qDebug() << "Discovered device count:"
+             << discoveryAgent->discoveredDevices().count();
     discoveryAgent->stop();
-    foreach (QBluetoothDeviceInfo deviceInfo, discoveryAgent->discoveredDevices()) {
+    foreach (QBluetoothDeviceInfo deviceInfo,
+             discoveryAgent->discoveredDevices()) {
         deviceInfo.setCached(true);
     }
     discoveryAgent->start();
@@ -154,18 +179,25 @@ void MainWindow::stopScan()
     ui->statusBar->clearMessage();
     ui->pushButtonSearch->setEnabled(true);
     qDebug() << "Devices:";
-    foreach (QBluetoothDeviceInfo deviceInfo, discoveryAgent->discoveredDevices()) {
+    foreach (QBluetoothDeviceInfo deviceInfo,
+             discoveryAgent->discoveredDevices()) {
         qDebug() << &deviceInfo << " " << deviceInfo.name()
                  << " Cached:" << deviceInfo.isCached()
                  << " Valid:" << deviceInfo.isValid();
     }
 }
 
-void MainWindow::deviceDiscovered(const QBluetoothDeviceInfo &device)
+void MainWindow::updateDevices(const QBluetoothDeviceInfo &device)
 {
-    qDebug() << "Found device:" << device.name() << '(' << device.address().toString() << ')';
+    qDebug() << "Found device:" << device.name() << '('
+             << device.address().toString() << ')';
 
-    BluetoothItem *i = remotes->value(device.address().toString(), new BluetoothItem());
+    BluetoothItem *i = remotes->value(device.address().toString(),
+                                      new BluetoothItem());
+    /*
+     * compare default "BluetoothItem" MAC with "device" MAC for realising that
+     * "device" is new or not.
+     */
     if (i->getMAC() != BluetoothItem().getMAC()) {
         for (int i = 0; i < ui->listWidget->count(); i++) {
             BluetoothItemWidget *itemWidget = static_cast<BluetoothItemWidget *>
@@ -177,16 +209,16 @@ void MainWindow::deviceDiscovered(const QBluetoothDeviceInfo &device)
         }
         i->setName(device.name());
         i->setAvailable(true);
-        return;
+//        return;
+    } else {
+        BluetoothItem *bItem = new BluetoothItem(device.address().toString(),
+                                                 device.name(),
+                                                 false,
+                                                 true);
+        remotes->insert(device.address().toString(), bItem);
+
+        addDevice(bItem);
     }
-
-    remotes->insert(device.address().toString(),
-              new BluetoothItem(device.address().toString(),
-                                device.name(),
-                                false,
-                                true));
-
-    addDevice(device.name(), device.address().toString(), true, false);
 }
 
 void MainWindow::scanLocalDevice()
@@ -219,4 +251,7 @@ void MainWindow::hostModeStateBehavior(const QBluetoothLocalDevice::HostMode hm)
     }
 }
 
-
+void MainWindow::updateSaveButton()
+{
+    ui->pushButtonSave->setEnabled(true);
+}

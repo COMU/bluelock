@@ -50,7 +50,7 @@ private slots:
     void startScan();
     void stopScan();
 
-    void deviceDiscovered(const QBluetoothDeviceInfo &device);
+    void updateDevices(const QBluetoothDeviceInfo &device);
 
     void scanLocalDevice();
 
@@ -60,8 +60,11 @@ private slots:
     void setLocalDeviceMode();
 
     void hostModeStateBehavior(const QBluetoothLocalDevice::HostMode hm);
+
+    void updateSaveButton();
+
 private:
-    void addDevice(QString DeviceName, QString DeviceMAC, bool available, bool trusted);
+    void addDevice(BluetoothItem *bItem);
     void removeDevice();
 
     Ui::MainWindow *ui;

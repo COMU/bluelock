@@ -1,15 +1,21 @@
 #ifndef BLUETOOTHITEM_H
 #define BLUETOOTHITEM_H
 
+#include <QObject>
 #include <QString>
 
-class BluetoothItem
+#include <customwidgets/bluetoothitemwidget.h>
+
+class BluetoothItem : public QObject
 {
+    Q_OBJECT
+
 public:
     explicit BluetoothItem(QString MAC = "0",
                            QString name = "0",
                            bool trusted = false,
-                           bool available = false);
+                           bool available = false,
+                           QObject *parent = 0);
 
     QString getMAC() const;
     void setMAC(const QString &value);
@@ -22,6 +28,9 @@ public:
 
     bool getAvailable() const;
     void setAvailable(bool value);
+
+public slots:
+    void updateTrustState(bool trustState);
 
 private:
     QString MAC;

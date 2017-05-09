@@ -37,7 +37,8 @@ class BlueConfPP : public QObject
 {
     Q_OBJECT
 public:
-    explicit BlueConfPP(QMap<QString, BluetoothItem *> *devices, QObject *parent = 0);
+    explicit BlueConfPP(QMap<QString, BluetoothItem *> *devices,
+                        QObject *parent = 0);
     ~BlueConfPP();
 
     void save();

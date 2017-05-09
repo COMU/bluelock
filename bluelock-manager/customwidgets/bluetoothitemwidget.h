@@ -43,6 +43,12 @@ public:
     void setTrust(bool trusted);
     void setAvailable(bool available);
 
+public slots:
+    void trustCheckBoxClicked(bool trustState);
+
+signals:
+    void trustStateChanged(bool trustState);
+
 private:
     Ui::BluetoothItemWidget *ui;
 };

@@ -34,6 +34,8 @@ BluetoothItemWidget::BluetoothItemWidget(QString DeviceName,
     ui->label_mac->setText(DeviceMAC);
     ui->checkBox_available->setChecked(available);
     ui->checkBox_trusted->setChecked(trusted);
+    connect(ui->checkBox_trusted, SIGNAL(clicked(bool)),
+            this, SLOT(trustCheckBoxClicked(bool)));
 }
 
 BluetoothItemWidget::~BluetoothItemWidget()
@@ -59,4 +61,9 @@ void BluetoothItemWidget::setTrust(bool trusted)
 void BluetoothItemWidget::setAvailable(bool available)
 {
     ui->checkBox_available->setChecked(available);
+}
+
+void BluetoothItemWidget::trustCheckBoxClicked(bool trustState)
+{
+    emit trustStateChanged(trustState);
 }
