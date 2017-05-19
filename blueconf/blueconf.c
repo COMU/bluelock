@@ -158,7 +158,7 @@ int is_match(RecordList *l, char *macaddr, const char *username)
 
 void get_conf()
 {
-    c_record_list(&rList);
+    c_record_list();
 
     yyin = fopen(ConfPath, "r");
 
