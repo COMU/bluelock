@@ -44,7 +44,7 @@
 #include <bluetooth/hci_lib.h>
 #include <crypt.h>
 
-#include "../blueconf/blueconf.h"
+#include <blueconf.h>
 
 #define BT_JOIN_ACTIVE 0
 #define BT_JOIN_INACTIVE -1
