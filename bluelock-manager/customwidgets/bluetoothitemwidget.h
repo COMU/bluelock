@@ -20,7 +20,7 @@
 #ifndef BLUETOOTHITEMWIDGET_H
 #define BLUETOOTHITEMWIDGET_H
 
-#include <QWidget>
+#include <QtWidgets/QWidget>
 
 namespace Ui {
 class BluetoothItemWidget;
