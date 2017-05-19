@@ -28,6 +28,7 @@ MainWindow::MainWindow(QWidget *parent) :
     ui(new Ui::MainWindow)
 {
     ui->setupUi(this);
+    this->setWindowTitle(APPLICATION_DISPLAY_NAME);
     ui->pushButtonSave->setDisabled(true);
     about = NULL;
 
