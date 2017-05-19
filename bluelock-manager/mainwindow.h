@@ -22,11 +22,13 @@
 
 #include <QBluetoothDeviceDiscoveryAgent>
 #include <QBluetoothLocalDevice>
-#include <QMainWindow>
+#include <QtWidgets/QMainWindow>
 #include <QDebug>
 #include <QTimer>
 #include <QStandardItemModel>
 #include <QMap>
+
+#include <aboutdialog.h>
 
 #include <blueconfpp/blueconfpp.h>
 #include <bluetoothitem.h>
@@ -63,11 +65,16 @@ private slots:
 
     void updateSaveButton();
 
+    void exit();
+    void openAbout();
+    void openAboutQt();
+
 private:
     void addDevice(BluetoothItem *bItem);
     void removeDevice();
 
     Ui::MainWindow *ui;
+    AboutDialog *about;
 
     QTimer *searchTimer;
     QTimer *statusMessageTimer;

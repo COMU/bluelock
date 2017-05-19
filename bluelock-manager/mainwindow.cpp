@@ -29,6 +29,7 @@ MainWindow::MainWindow(QWidget *parent) :
 {
     ui->setupUi(this);
     ui->pushButtonSave->setDisabled(true);
+    about = NULL;
 
     localDevice = new QBluetoothLocalDevice(this);
     /*
@@ -62,6 +63,12 @@ MainWindow::MainWindow(QWidget *parent) :
             SLOT(hostModeStateBehavior(QBluetoothLocalDevice::HostMode)));
     connect(ui->pushButtonOnOff, SIGNAL(released()),
             this, SLOT(setLocalDeviceMode()));
+    connect(ui->actionExit, SIGNAL(triggered(bool)),
+            this, SLOT(exit()));
+    connect(ui->actionAbout, SIGNAL(triggered(bool)),
+            this, SLOT(openAbout()));
+    connect(ui->actionAbout_Qt, SIGNAL(triggered(bool)),
+            this, SLOT(openAboutQt()));
 
     // local device combobox
     localDeviceModel = new QStandardItemModel(this);
@@ -254,4 +261,22 @@ void MainWindow::hostModeStateBehavior(const QBluetoothLocalDevice::HostMode hm)
 void MainWindow::updateSaveButton()
 {
     ui->pushButtonSave->setEnabled(true);
+}
+
+void MainWindow::exit()
+{
+    QApplication::exit();
+}
+
+void MainWindow::openAbout()
+{
+    if (!about)
+        about = new AboutDialog(this);
+
+    about->show();
+}
+
+void MainWindow::openAboutQt()
+{
+    QApplication::aboutQt();
 }
