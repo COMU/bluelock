@@ -4,9 +4,10 @@
 *.tab.*
 *.yy.*
 *.pro.user*
-build-bluelock-manager*
+build*
 
 # CMake
+CMakeLists.txt.user
 CMakeCache.txt
 CMakeFiles
 CMakeScripts
