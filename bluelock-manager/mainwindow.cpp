@@ -54,7 +54,7 @@ MainWindow::MainWindow(QWidget *parent) :
             this, SLOT(stopScan()));
 
     discoveryAgent = new QBluetoothDeviceDiscoveryAgent(this);
-    connect(discoveryAgent, SIGNAL(updateDevices(QBluetoothDeviceInfo)),
+    connect(discoveryAgent, SIGNAL(deviceDiscovered(QBluetoothDeviceInfo)),
             this, SLOT(updateDevices(QBluetoothDeviceInfo)));
     connect(ui->pushButtonSearch, SIGNAL(released()),
             this, SLOT(startScan()));
