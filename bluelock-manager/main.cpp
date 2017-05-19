@@ -18,7 +18,8 @@
  *  along with bluelock-manager.  If not, see <http://www.gnu.org/licenses/>.
  */
 #include "mainwindow.h"
-#include <QApplication>
+#include <QtWidgets/QApplication>
+#include <QtCore/QDebug>
 
 int main(int argc, char *argv[])
 {
