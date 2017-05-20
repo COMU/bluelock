@@ -19,6 +19,10 @@
  */
 #include "blueconfpp.h"
 
+#include <QDBusMessage>
+#include <QDBusReply>
+#include <QDBusConnection>
+
 BlueConfPP::BlueConfPP(QMap<QString, BluetoothItem *> *devices,
                        QObject *parent) :
     QObject(parent)
@@ -88,9 +92,20 @@ void BlueConfPP::save()
 
 void BlueConfPP::getDevicesList()
 {
-    QString name = qgetenv("USER");
-    if (name.isEmpty())
-        name = qgetenv("USERNAME");
+    QString name = "";
+    QDBusMessage mssg;
+    mssg = QDBusMessage::createMethodCall("org.freedesktop.login1",
+                                          "/org/freedesktop/login1/user/self",
+                                          "org.freedesktop.DBus.Properties",
+                                          "Get");
+    QList<QVariant> args;
+    args.append(QVariant("org.freedesktop.login1.User"));
+    args.append(QVariant("Name"));
+    mssg.setArguments(args);
+
+    QDBusReply<QVariant> reply = QDBusConnection::systemBus().call(mssg);
+    if (reply.isValid())
+        name = reply.value().toString();
 
     bool usernameSelected = false;
 
