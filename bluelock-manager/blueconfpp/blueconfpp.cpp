@@ -83,8 +83,12 @@ void BlueConfPP::save()
         out << r.first << " {\n";
         for (i = r.second->begin(); i != r.second->end(); ++i) {
             BluetoothItem *item = i.value();
-            out << "\t\"" << item->getName() << "\" = " << item->getMAC()
-                << ",\n";
+            if (item->getTrusted())
+                out << "\t\""
+                    << item->getName()
+                    << "\" = "
+                    << item->getMAC()
+                    << ",\n";
         }
         out << "}\n\n";
     }
