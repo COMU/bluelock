@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE policyconfig PUBLIC
+ "-//freedesktop//DTD PolicyKit Policy Configuration 1.0//EN"
+ "http://www.freedesktop.org/standards/PolicyKit/1/policyconfig.dtd">
+<policyconfig>
+
+  <vendor>KafaMerkezi</vendor>
+		  
+  <action id="org.kafamerkezi.pkexec.bluelock-manager">
+    <description>Run the Bluelock Manager</description>
+    <description xml:lang="tr">Bluelock Manager'ı çalıştırın</description>
+    <message>Authentication is required to run the Bluelock Manager</message>
+    <message xml:lang="tr">Bluelock Manager'ı çalıştırmak için kimlik doğrulaması gereklidir</message>
+    <icon_name></icon_name>
+    <defaults>
+      <allow_any>no</allow_any>
+      <allow_inactive>auth_admin</allow_inactive>
+      <allow_active>auth_admin</allow_active>
+    </defaults>
+    <annotate key="org.freedesktop.policykit.exec.path">/usr/sbin/bluelock-manager</annotate>
+    <annotate key="org.freedesktop.policykit.exec.allow_gui">true</annotate>
+  </action>
+
+</policyconfig>
+
