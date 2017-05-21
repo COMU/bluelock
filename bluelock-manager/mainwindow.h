@@ -51,6 +51,7 @@ public:
 private slots:
     void startScan();
     void stopScan();
+    void saveConfig();
 
     void updateDevices(const QBluetoothDeviceInfo &device);
 

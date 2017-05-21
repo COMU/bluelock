@@ -58,6 +58,8 @@ MainWindow::MainWindow(QWidget *parent) :
             this, SLOT(updateDevices(QBluetoothDeviceInfo)));
     connect(ui->pushButtonSearch, SIGNAL(released()),
             this, SLOT(startScan()));
+    connect(ui->pushButtonSave, SIGNAL(released()),
+            this, SLOT(saveConfig()));
     connect(localDevice,
             SIGNAL(hostModeStateChanged(QBluetoothLocalDevice::HostMode)),
             this,
@@ -193,6 +195,11 @@ void MainWindow::stopScan()
                  << " Cached:" << deviceInfo.isCached()
                  << " Valid:" << deviceInfo.isValid();
     }
+}
+
+void MainWindow::saveConfig()
+{
+    conf->save();
 }
 
 void MainWindow::updateDevices(const QBluetoothDeviceInfo &device)
