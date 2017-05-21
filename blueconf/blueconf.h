@@ -32,7 +32,7 @@ extern "C" {
 #include "blueparse.tab.h"
 #include "structures.h"
 
-static const char ConfPath[] = "/etc/bluelock.conf";
+static const char ConfPath[] = CONFIG_PATH;
 
 RecordList *rList;
 

@@ -7,6 +7,10 @@ set(BLUELOCK_PATCH_VERSION 0)
 set(BLUELOCK_VERSION
   ${BLUELOCK_MAJOR_VERSION}.${BLUELOCK_MINOR_VERSION}.${BLUELOCK_PATCH_VERSION})
 
+add_definitions(
+    -DCONFIG_PATH="/etc/bluelock.conf"
+    )
+
 include_directories(
     blueconf/
     ${CMAKE_CURRENT_BINARY_DIR}/blueconf
