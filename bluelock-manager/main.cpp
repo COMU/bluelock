@@ -25,7 +25,7 @@ int main(int argc, char *argv[])
 {
     QApplication a(argc, argv);
 
-//    a.setApplicationDisplayName(APPLICATION_DISPLAY_NAME);
+    a.setApplicationDisplayName(APPLICATION_DISPLAY_NAME);
     a.setApplicationName(APPLICATION_NAME);
     a.setApplicationVersion(APPLICATION_VERSION);
 
