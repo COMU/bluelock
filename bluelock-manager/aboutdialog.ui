@@ -2,6 +2,14 @@
 <ui version="4.0">
  <class>AboutDialog</class>
  <widget class="QWidget" name="AboutDialog">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>318</width>
+    <height>189</height>
+   </rect>
+  </property>
   <property name="sizePolicy">
    <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
     <horstretch>0</horstretch>
@@ -98,12 +106,18 @@
        <property name="text">
         <string>Credits</string>
        </property>
+       <property name="checkable">
+        <bool>true</bool>
+       </property>
       </widget>
      </item>
      <item>
       <widget class="QPushButton" name="pushButtonLicense">
        <property name="text">
         <string>License</string>
+       </property>
+       <property name="checkable">
+        <bool>true</bool>
        </property>
       </widget>
      </item>
@@ -133,9 +147,6 @@
   <zorder>verticalWidget</zorder>
   <zorder>labelApplicationName</zorder>
   <zorder>labelApplicationVersion</zorder>
-  <zorder>labelApplicationDescription</zorder>
-  <zorder>labelCopyright</zorder>
-  <zorder>labelLicense</zorder>
  </widget>
  <resources/>
  <connections/>

@@ -4,6 +4,7 @@
 #include <QtWidgets/QDialog>
 #include <QDebug>
 #include <QDesktopServices>
+#include <QLabel>
 #include <QUrl>
 #include <QtWidgets/QTextBrowser>
 
@@ -21,13 +22,14 @@ public:
 
 private slots:
     void closeWindow();
-    void openLicense();
-    void openCredits();
+    void openLicense(bool state);
+    void openCredits(bool state);
 
 private:
     Ui::AboutDialog *ui;
 
     QTextBrowser *contributorBrowser;
+    QTextBrowser *licenseBrowser;
 };
 
 #endif // ABOUTDIALOG_H
