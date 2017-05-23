@@ -201,7 +201,7 @@ void *bluetooth_seeker(void *bthreadargs)
 				}
 				if(ioctl(bluetoothDevice, HCIGETCONNINFO, (unsigned long) cr) < 0){
 					if (hci_create_connection(bluetoothDevice, &(ii+i)->bdaddr, htobs(ptype_rssi),
-								htobs(0x0000), role_rssi, &handle_rssi, 25000) < 0){
+								htobs(0x0000), role_rssi, &handle_rssi, 1000) < 0){
 								perror("Can't create connection");}
 				}
 				cr = malloc(sizeof(*cr) + sizeof(struct hci_conn_info));
