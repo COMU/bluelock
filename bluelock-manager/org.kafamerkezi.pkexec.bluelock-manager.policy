@@ -11,7 +11,7 @@
     <description xml:lang="tr">Bluelock Manager'ı çalıştırın</description>
     <message>Authentication is required to run the Bluelock Manager</message>
     <message xml:lang="tr">Bluelock Manager'ı çalıştırmak için kimlik doğrulaması gereklidir</message>
-    <icon_name></icon_name>
+    <icon_name>bluelock-manager</icon_name>
     <defaults>
       <allow_any>no</allow_any>
       <allow_inactive>auth_admin</allow_inactive>
