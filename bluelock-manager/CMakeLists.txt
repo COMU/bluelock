@@ -1,3 +1,4 @@
+cmake_minimum_required(VERSION 3.0.2 FATAL_ERROR)
 project(bluelock-manager)
 
 set(BLUELOCK_MANAGER_MAJOR_VERSION 0)
