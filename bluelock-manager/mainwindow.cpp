@@ -101,7 +101,7 @@ MainWindow::MainWindow(QWidget *parent) :
 MainWindow::~MainWindow()
 {
     discoveryAgent->stop();
-    localDevice->setHostMode(QBluetoothLocalDevice::HostPoweredOff);
+    //localDevice->setHostMode(QBluetoothLocalDevice::HostPoweredOff);
 
     delete ui;
 
