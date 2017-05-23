@@ -17,7 +17,6 @@ set(PAM_BLUELOCK_LIBRARIES
     "blueconfs"
     )
 set(EXTRA_LIBS 
-    -lcrypt
     -lbluetooth
     )
 
